@@ -1,0 +1,206 @@
+<view class="page">
+  <view wx:if="{{!bannerDismissed}}" class="notice-bar">
+    <text class="nb-icon">📢</text>
+    <text class="nb-text">温馨提示：易碎品/生鲜请选「急件」，不同地址建议分开发布</text>
+    <text class="nb-close" bindtap="dismissBanner">✕</text>
+  </view>
+
+  <!-- 驿站 -->
+  <view class="card">
+    <view class="card-title">📍 快递驿站</view>
+    <picker mode="selector" range="{{stations}}" range-key="name" value="{{stationIdx}}" bindchange="onStationChange">
+      <view class="row-picker">
+        <text>{{stations[stationIdx].name}}</text>
+        <text class="arr">›</text>
+      </view>
+    </picker>
+    <view class="addr-hint">📍 {{stations[stationIdx].addr}}</view>
+  </view>
+
+  <!-- 快递卡列表 -->
+  <view class="card">
+    <view class="card-title">📦 要取的快递（{{packages.length}}）</view>
+
+    <view wx:for="{{packages}}" wx:key="index" class="exp-card">
+      <view class="exp-del" catchtap="removePackage" data-idx="{{index}}">✕</view>
+      <view class="exp-head">
+        <text class="ptype-tag {{item.ptype === 'small' ? 'ptype-small' : item.ptype === 'mid' ? 'ptype-mid' : item.ptype === 'big' ? 'ptype-big' : 'ptype-urgent'}}">{{item.ptype === 'small' ? '小包裹 ¥' : item.ptype === 'mid' ? '中包裹 ¥' : item.ptype === 'big' ? '大包裹 ¥' : '急件 ¥'}}{{item.price}}</text>
+        <text class="express-tag">{{item.express}}</text>
+        <text wx:if="{{item.name}}" class="exp-name">{{item.name}}</text>
+      </view>
+      <view class="exp-info">
+        取件码 <text class="hl">{{item.code}}</text> · 尾号 <text class="hl">{{item.tail}}</text>
+      </view>
+      <view class="exp-foot">
+        <text class="express-tag exp-foot-tag">{{item.express}}</text>
+        <text>尾号 {{item.tail}}</text>
+      </view>
+    </view>
+
+    <view class="add-btn" bindtap="showAddSheet">
+      <text class="add-plus">+</text>
+      <text>添加快递</text>
+    </view>
+  </view>
+
+  <!-- 送达信息 -->
+  <view class="card">
+    <view class="card-title">🏠 送达信息</view>
+    <view class="row-input">
+      <text class="lb">送达地址</text>
+      <input class="vl" placeholder="如：3号宿舍楼 512室" placeholder-class="ph" value="{{address}}" bindinput="onAddressInput" />
+    </view>
+    <view wx:if="{{defaultTail}}" class="hint-line">💡 不同地址建议分开发布，每个订单一个地址</view>
+
+    <view class="row-input" bindtap="showEtaSheet">
+      <text class="lb">希望送达</text>
+      <view class="vl eta-row-vl">
+        <text class="vl-text">{{etaDisplay}}</text>
+        <text class="arr">›</text>
+      </view>
+    </view>
+
+    <view class="row-input">
+      <text class="lb">备注（可选）</text>
+    </view>
+    <textarea class="ta" placeholder="如：到了打电话，大件帮忙抬一下" placeholder-class="ph" value="{{note}}" bindinput="onNoteInput"></textarea>
+  </view>
+
+  <!-- 自动算出的总价 -->
+  <view wx:if="{{packages.length > 0}}" class="card price-card">
+    <view class="price-summary">
+      <view class="price-head">
+        <text>自动算出的跑腿费</text>
+        <text class="total-label">¥{{totalPrice}}</text>
+      </view>
+      <view class="price-hint">
+        共 {{pkgCount}} 个快递 · 小¥3 / 中¥5 / 大¥10 / 急¥15+
+      </view>
+    </view>
+  </view>
+
+  <view style="height:180rpx"></view>
+
+  <!-- 底部发布按钮 -->
+  <view class="sticky-action">
+    <view class="sticky-info">
+      <text>¥{{totalPrice}}</text>
+      <text class="sticky-sub">{{pkgCount}} 个快递</text>
+    </view>
+    <button class="btn-primary" bindtap="submitOrder">立即发布</button>
+  </view>
+</view>
+
+<!-- ★ 半屏弹窗 -->
+<view class="sheet-mask" wx:if="{{showSheet}}" bindtap="closeSheet"></view>
+<view class="sheet-wrap" wx:if="{{showSheet}}">
+  <!-- Step 1: 手动填写 -->
+  <block wx:if="{{sheetStep === 1}}">
+    <view class="sheet-title">手动填写快递信息 <text class="sheet-close" bindtap="closeSheet">✕</text></view>
+    <scroll-view class="sheet-scroll" scroll-y>
+      <view class="sheet-switch" bindtap="chooseScan">
+        <text>📷 扫码识别面单</text>
+        <text class="arr">›</text>
+      </view>
+      <view class="input-sim">
+        <text class="lb">快递公司 <text class="req">*</text></text>
+      </view>
+      <view class="quick-express">
+        <text wx:for="{{expressList}}" wx:key="index" class="qe {{index === tempExpressIdx ? 'active' : ''}}" data-idx="{{index}}" bindtap="onQuickExpress">{{item}}</text>
+      </view>
+      <view class="input-sim">
+        <text class="lb">取件码 <text class="req">*</text></text>
+        <input class="tf" placeholder="如：SF-3382 或 7-2-8862" placeholder-class="ph" value="{{tempCode}}" bindinput="onTempCode" />
+      </view>
+      <view class="input-sim">
+        <text class="lb">手机尾号 <text class="req">*</text></text>
+        <input class="tf" placeholder="如：8888" placeholder-class="ph" value="{{tempTail}}" bindinput="onTempTail" maxlength="4" />
+        <text wx:if="{{defaultTail}}" class="def">（默认用你手机尾号）</text>
+      </view>
+      <view class="input-sim">
+        <text class="lb">备注名（可选）</text>
+        <input class="tf" placeholder="如：运动鞋鞋盒、衣服" placeholder-class="ph" value="{{tempName}}" bindinput="onTempName" />
+      </view>
+      <view class="ptype-label">选包裹类型（用于定价）</view>
+      <view class="ptype-pick-inline">
+        <view wx:for="{{ptypeOptions}}" wx:key="key" class="ptype-chip {{tempPtype === item.key ? 'active' : ''}} chip-{{item.key}}" data-ptype="{{item.key}}" bindtap="pickPtype">
+          <text class="chip-icon">{{item.icon}}</text>
+          <text class="chip-name">{{item.label}}</text>
+          <text class="chip-price">¥{{pricing[item.key] || 3}}</text>
+        </view>
+      </view>
+    </scroll-view>
+    <button class="btn-primary confirm-btn" bindtap="confirmAddPackage">确认添加</button>
+  </block>
+
+  <!-- Step 2: 扫码结果 -->
+  <block wx:if="{{sheetStep === 2}}">
+    <view class="sheet-title">识别成功！确认一下 <text class="sheet-close" bindtap="closeSheet">✕</text></view>
+    <scroll-view class="sheet-scroll" scroll-y>
+      <view class="sheet-switch" bindtap="switchToManual">
+        <text>✋ 手动修改</text>
+        <text class="arr">›</text>
+      </view>
+      <view class="scan-result">
+        <view class="scan-title">✅ 面单已自动识别</view>
+        <view class="scan-row"><text class="sk">快递公司</text><text class="sv">{{expressList[tempExpressIdx]}}</text></view>
+        <view class="scan-row"><text class="sk">取件码</text><text class="sv hl">{{tempCode}}</text></view>
+        <view class="scan-row"><text class="sk">手机尾号</text><text class="sv hl">{{tempTail}}</text></view>
+        <view wx:if="{{tempName}}" class="scan-row"><text class="sk">包裹名称</text><text class="sv">{{tempName}}</text></view>
+      </view>
+      <view class="ptype-label">确认包裹类型（用于定价）</view>
+      <view class="ptype-pick-inline">
+        <view wx:for="{{ptypeOptions}}" wx:key="key" class="ptype-chip {{tempPtype === item.key ? 'active' : ''}} chip-{{item.key}}" data-ptype="{{item.key}}" bindtap="pickPtype">
+          <text class="chip-icon">{{item.icon}}</text>
+          <text class="chip-name">{{item.label}}</text>
+          <text class="chip-price">¥{{pricing[item.key] || 3}}</text>
+        </view>
+      </view>
+    </scroll-view>
+    <button class="btn-primary confirm-btn" bindtap="confirmAddPackage">确认添加</button>
+  </block>
+</view>
+
+<!-- ETA 选择弹窗（美团风格） -->
+<view class="sheet-mask" wx:if="{{showEtaSheet}}" bindtap="closeEtaSheet"></view>
+<view class="eta-sheet" wx:if="{{showEtaSheet}}">
+  <view class="eta-sheet-title">
+    希望送达
+    <text class="sheet-close" bindtap="closeEtaSheet">✕</text>
+  </view>
+  <scroll-view class="eta-sheet-scroll" scroll-y>
+
+    <view class="eta-section">
+      <view class="eta-section-title">
+        <text class="section-dot quick-dot"></text>
+        立即送达
+      </view>
+      <view class="eta-quick-card {{etaQuick.value === etaChosenVal ? 'active' : ''}}"
+            data-value="{{etaQuick.value}}"
+            bindtap="pickEta">
+        <view class="quick-left">
+          <view class="quick-label">🚴 最快送达</view>
+          <view class="quick-sub">{{etaQuick.sub}}</view>
+        </view>
+        <view wx:if="{{etaQuick.value === etaChosenVal}}" class="check-mark">✓</view>
+      </view>
+    </view>
+
+    <view class="eta-section" wx:for="{{etaGroups}}" wx:key="label" wx:for-item="group">
+      <view class="eta-section-title">
+        <text class="section-dot"></text>
+        预约 · {{group.label}}
+      </view>
+      <view class="eta-slot-grid">
+        <view wx:for="{{group.slots}}" wx:key="timeLabel"
+              wx:for-item="slot"
+              class="eta-slot {{slot.value === etaChosenVal ? 'active' : ''}}"
+              data-value="{{slot.value}}"
+              bindtap="pickEta">
+          {{slot.timeLabel}}
+        </view>
+      </view>
+    </view>
+
+  </scroll-view>
+</view>

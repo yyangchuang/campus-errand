@@ -1,0 +1,14 @@
+<view class="tabbar">
+  <block wx:if="{{role === 'runner'}}">
+    <view class="tab-item {{selected === index ? 'active' : ''}}" wx:for="{{runnerTabs}}" wx:key="pagePath" data-path="{{item.pagePath}}" data-idx="{{index}}" bindtap="switchTab">
+      <text class="icon">{{item.icon}}</text>
+      <text class="text">{{item.text}}</text>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="tab-item {{selected === index ? 'active' : ''}}" wx:for="{{userTabs}}" wx:key="pagePath" data-path="{{item.pagePath}}" data-idx="{{index}}" bindtap="switchTab">
+      <text class="icon">{{item.icon}}</text>
+      <text class="text">{{item.text}}</text>
+    </view>
+  </block>
+</view>

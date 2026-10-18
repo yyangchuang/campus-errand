@@ -1,0 +1,53 @@
+<view class="page">
+  <block wx:if="{{!loggedIn}}">
+    <view class="empty">
+      <text class="empty-emoji">🔐</text>
+      <text class="empty-text">请先登录</text>
+      <text class="empty-sub">登录后查看我的订单</text>
+      <button class="btn-login-empty" bindtap="goLogin">立即登录</button>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="page-header">
+      <text class="page-title">{{roleLabel}}</text>
+      <text class="page-sub">共 {{orderList.length}} 单</text>
+    </view>
+
+    <scroll-view class="tabs" scroll-x enable-flex scroll-with-animation>
+      <view wx:for="{{filterTabs}}" wx:key="key"
+            class="tab {{filterStatus === item.key ? 'active' : ''}}"
+            data-key="{{item.key}}" bindtap="filterChange">{{item.label}}</view>
+    </scroll-view>
+
+    <view wx:if="{{filteredList.length === 0}}" class="empty">
+      <text class="empty-emoji">📦</text>
+      <text class="empty-text">{{filterStatus === 'all' ? '还没有订单' : '该状态暂无订单'}}</text>
+      <text class="empty-sub">{{filterStatus === 'all' ? '去发布一单试试吧～' : '切换其他状态看看'}}</text>
+    </view>
+
+    <view wx:for="{{filteredList}}" wx:key="id" class="order-card" bindtap="goDetail" data-id="{{item.id}}">
+      <view class="oc-head">
+        <view>
+          <text class="tag {{item.statusCls}}">{{item.statusLabel}}</text>
+          <text wx:if="{{item.takeMode === 'assign'}}" class="tag tag-pink">派单</text>
+        </view>
+        <text class="oc-reward">¥{{item.total}}</text>
+      </view>
+      <view class="oc-route">
+        <view class="route-r1"><text class="dotg">●</text>{{item.stationName}}</view>
+        <view class="route-r2"><text class="doto">●</text>{{item.address}}</view>
+      </view>
+      <view class="oc-meta">
+        <view class="pkg-tags">
+          <text wx:for="{{item.pkgTags}}" wx:for-item="tag" wx:key="index" class="ptype-tag {{tag.cls}}">{{tag.text}}×1</text>
+        </view>
+        共{{item.pkgCount}}件
+      </view>
+      <view class="oc-foot">
+        <text class="oc-time">{{item.timeLabel}} · {{item.id}}</text>
+        <text class="oc-time">查看详情 ›</text>
+      </view>
+    </view>
+  </block>
+</view>

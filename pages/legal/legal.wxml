@@ -1,0 +1,11 @@
+<view class="legal-page">
+  <view class="doc-title">{{title}}</view>
+  <view class="doc-update">更新日期：2026 年 10 月 1 日</view>
+
+  <block wx:for="{{sections}}" wx:key="title">
+    <view class="sec-title">{{item.title}}</view>
+    <view class="sec-body">{{item.body}}</view>
+  </block>
+
+  <view class="doc-footer">— 校园跑腿团队</view>
+</view>
