@@ -1,3 +1,4 @@
+const { ICONS } = require("../../utils/icons.js");
 const api = require('../../utils/api.js');
 
 const PHONE_ROLES = [
@@ -15,6 +16,7 @@ function detectRole(phone) {
 
 Page({
   data: {
+    icons: ICONS,
     showPhoneExpand: false,
     phone: '',
     phoneValid: false,

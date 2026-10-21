@@ -1,115 +1,118 @@
-.page { padding-bottom: calc(140rpx + env(safe-area-inset-bottom)); }
+.page { padding-top: 48rpx; padding-bottom: calc(140rpx + env(safe-area-inset-bottom)); }
 
 .section-label {
   display: flex;
   align-items: center;
-  padding: 32rpx 32rpx 12rpx;
+  padding: 24rpx 32rpx 12rpx;
   font-size: 26rpx;
-  color: #5f6368;
+  color: #6b7280;
   font-weight: 600;
 }
 .section-label .count { color: #ff6b35; font-weight: 500; margin-left: 4rpx; }
 
 .order-card {
   background: #fff;
-  border-radius: 24rpx;
-  margin: 16rpx 24rpx;
-  padding: 28rpx 32rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  transition: transform 0.15s, box-shadow 0.15s;
+  border-radius: 20rpx;
+  margin: 12rpx 24rpx;
+  padding: 24rpx 28rpx;
+  border: 2rpx solid #e5e7eb;
+  transition: border-color 0.12s, background 0.12s;
 }
-.order-card:active { transform: scale(0.995); box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.08); }
+.order-card:active { border-color: #ff6b35; background: #fff7f3; }
 
-.assign-card { border: 2rpx solid #ff6b35; position: relative; }
+.assign-card { border: 2rpx solid #f59e0b; position: relative; background: #fffbeb; }
 .assign-badge {
   position: absolute;
-  top: -20rpx;
-  left: 32rpx;
-  background: linear-gradient(135deg, #ff7a4a, #ff5a20);
+  top: -16rpx;
+  left: 28rpx;
+  background: #f59e0b;
   color: #fff;
   font-size: 20rpx;
-  padding: 4rpx 20rpx;
-  border-radius: 20rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
   font-weight: 600;
-  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.3);
 }
 
 .oc-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12rpx;
+  margin-bottom: 10rpx;
 }
-.oc-time { font-size: 22rpx; color: #9aa0a6; }
-.oc-reward { font-size: 44rpx; color: #ff6b35; font-weight: 600; }
+.oc-time { font-size: 22rpx; color: #9ca3af; }
+.oc-reward {
+  font-size: 48rpx;
+  color: #ff6b35;
+  font-weight: 800;
+  font-family: "DIN Alternate", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: -1rpx;
+}
 
 .oc-route {
-  background: linear-gradient(135deg, #f8f9fa, #fafbfc);
-  border-radius: 16rpx;
-  padding: 18rpx 24rpx;
+  background: #fafbfc;
+  border-radius: 14rpx;
+  padding: 16rpx 20rpx;
   font-size: 26rpx;
-  border: 2rpx solid #f0f2f5;
+  border: 2rpx solid #f3f4f6;
 }
-.route-r1 { margin-bottom: 6rpx; }
-.dotg { color: #1e8e3e; font-size: 18rpx; margin-right: 12rpx; }
-.doto { color: #ff6b35; font-size: 18rpx; margin-right: 12rpx; }
+.route-r1 { margin-bottom: 4rpx; }
+.dotg { color: #22c55e; font-size: 16rpx; margin-right: 10rpx; }
+.doto { color: #ff6b35; font-size: 16rpx; margin-right: 10rpx; }
 
 .oc-meta {
   font-size: 24rpx;
-  color: #5f6368;
-  margin-top: 16rpx;
+  color: #6b7280;
+  margin-top: 12rpx;
   display: flex;
-  gap: 12rpx;
-  flex-wrap: wrap;
+flex-wrap: wrap;
   align-items: center;
 }
-.pkg-tags { display: flex; gap: 8rpx; }
+.pkg-tags { display: flex; }
 
 .oc-foot {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20rpx;
-  padding-top: 20rpx;
-  border-top: 2rpx solid #f5f6f8;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f3f4f6;
 }
 
 .assign-actions {
   display: flex;
-  gap: 20rpx;
-  margin-top: 24rpx;
+margin-top: 20rpx;
 }
 .btn-reject, .btn-accept {
   flex: 1;
-  border-radius: 44rpx;
-  padding: 20rpx 0;
+  border-radius: 40rpx;
+  padding: 18rpx 0;
   font-size: 26rpx;
-  transition: opacity 0.15s;
+  font-weight: 500;
+  transition: all 0.12s;
 }
 .btn-reject {
   background: #fff;
-  border: 2rpx solid #dadce0;
-  color: #5f6368;
+  border: 2rpx solid #d1d5db;
+  color: #6b7280;
 }
-.btn-reject:active { background: #f5f6f8; }
+.btn-reject:active { background: #f3f4f6; border-color: #9ca3af; }
 .btn-accept {
-  background: linear-gradient(135deg, #ff7a4a, #ff5a20);
+  background: #f59e0b;
   color: #fff;
   border: none;
 }
-.btn-accept:active { opacity: 0.85; }
+.btn-accept:active { background: #d97706; }
 
 .btn-grab {
-  margin-top: 20rpx;
-  background: linear-gradient(135deg, #ff7a4a, #ff5a20);
+  margin-top: 16rpx;
+  background: #ff6b35;
   color: #fff;
   border: none;
   border-radius: 44rpx;
-  padding: 22rpx 0;
+  padding: 20rpx 0;
   font-size: 28rpx;
   font-weight: 600;
   letter-spacing: 2rpx;
-  box-shadow: 0 6rpx 20rpx rgba(255, 107, 53, 0.3);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: background 0.12s, transform 0.12s;
 }
-.btn-grab:active { transform: scale(0.97); box-shadow: 0 2rpx 10rpx rgba(255, 107, 53, 0.3); }
+.btn-grab:active { background: #e55a2b; transform: scale(0.98); }

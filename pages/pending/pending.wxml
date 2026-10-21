@@ -1,7 +1,7 @@
 <view class="page">
   <block wx:if="{{!loggedIn}}">
     <view class="empty">
-      <text class="empty-emoji">🔐</text>
+      <image class="empty-emoji" src="{{icons.shield_gray}}" mode="aspectFit" />
       <text class="empty-text">请先登录</text>
       <text class="empty-sub">登录后查看待抢订单</text>
       <button class="btn-login-empty" bindtap="goLogin">立即登录</button>
@@ -10,70 +10,71 @@
 
   <block wx:else>
     <block wx:if="{{assignList.length > 0}}">
-      <view class="section-label">🔔 派单给我（{{assignList.length}}）</view>
+      <view class="section-label">
+        <image class="sl-ic" src="{{icons.bell_orange}}" mode="aspectFit" />
+        <text>派单给我（{{assignList.length}}）</text>
+      </view>
       <view wx:for="{{assignList}}" wx:key="id" class="order-card assign-card" bindtap="goDetail" data-id="{{item.id}}">
         <view class="assign-badge">管理员派单</view>
         <view class="oc-head">
-          <view>
-            <text class="tag tag-pink">派单</text>
-            <text class="tag tag-red" wx:if="{{item.takeMode === 'assign'}}">加急</text>
-          </view>
           <text class="oc-time">{{item.timeLabel}}</text>
-        </view>
-        <view class="oc-route">
-          <view class="route-r1"><text class="dotg">●</text>{{item.stationName}}</view>
-          <view class="route-r2"><text class="doto">●</text>{{item.address}}</view>
-        </view>
-        <view class="oc-meta">
-          <view class="pkg-tags">
-            <text wx:for="{{item.pkgTags}}" wx:for-item="tag" wx:key="index" class="ptype-tag {{tag.cls}}">{{tag.text}}×1</text>
-          </view>
-          共{{item.pkgCount}}件 · 取件码 {{item.firstCode}}+
-        </view>
-        <view class="oc-foot">
-          <text class="oc-time">{{item.note}}</text>
           <text class="oc-reward">¥{{item.total}}</text>
         </view>
-        <view class="assign-actions" catchtap>
-          <button class="btn-reject" data-id="{{item.id}}" bindtap="rejectAssign">拒绝</button>
-          <button class="btn-accept" data-id="{{item.id}}" bindtap="acceptAssign">接受派单</button>
+        <view class="oc-route">
+          <view class="route-r1">
+            <text class="doto">●</text>
+            <text>{{item.stationName}}</text>
+          </view>
+          <view class="route-r2">
+            <text class="dotg">●</text>
+            <text>{{item.address}}</text>
+          </view>
+        </view>
+        <view class="oc-meta">
+          <text>共{{item.pkgCount}}件 · 取件码 {{item.firstCode}}+</text>
+          <text wx:if="{{item.urgent}}" class="tag tag-orange">急件</text>
+        </view>
+        <view class="assign-actions">
+          <button class="btn-reject" catchtap="rejectAssign" data-id="{{item.id}}">拒绝</button>
+          <button class="btn-accept" catchtap="acceptAssign" data-id="{{item.id}}">接受</button>
         </view>
       </view>
     </block>
 
-    <view class="section-label">
-      <text>🔥 可抢单</text>
-      <text class="count">（{{grabList.length}}）</text>
-    </view>
-
-    <view wx:for="{{grabList}}" wx:key="id" class="order-card">
-      <view bindtap="goDetail" data-id="{{item.id}}">
+    <block wx:if="{{grabList.length > 0}}">
+      <view class="section-label">
+        <image class="sl-ic" src="{{icons.flame_orange}}" mode="aspectFit" />
+        <text>可抢单（{{grabList.length}}）</text>
+      </view>
+      <view wx:for="{{grabList}}" wx:key="id" class="order-card" bindtap="goDetail" data-id="{{item.id}}">
         <view class="oc-head">
-          <view><text class="tag tag-orange">待接单</text></view>
           <text class="oc-time">{{item.timeLabel}}</text>
-        </view>
-        <view class="oc-route">
-          <view class="route-r1"><text class="dotg">●</text>{{item.stationName}}</view>
-          <view class="route-r2"><text class="doto">●</text>{{item.address}}</view>
-        </view>
-        <view class="oc-meta">
-          <view class="pkg-tags">
-            <text wx:for="{{item.pkgTags}}" wx:for-item="tag" wx:key="index" class="ptype-tag {{tag.cls}}">{{tag.text}}×1</text>
-          </view>
-          共{{item.pkgCount}}件
-        </view>
-        <view class="oc-foot">
-          <text class="oc-time">取件码 {{item.firstCode}}+</text>
           <text class="oc-reward">¥{{item.total}}</text>
         </view>
+        <view class="oc-route">
+          <view class="route-r1">
+            <text class="doto">●</text>
+            <text>{{item.stationName}}</text>
+          </view>
+          <view class="route-r2">
+            <text class="dotg">●</text>
+            <text>{{item.address}}</text>
+          </view>
+        </view>
+        <view class="oc-meta">
+          <text>共{{item.pkgCount}}件</text>
+          <text wx:if="{{item.urgent}}" class="tag tag-orange">急件</text>
+        </view>
+        <button class="btn-grab" catchtap="grabOrder" data-id="{{item.id}}">立即抢单</button>
       </view>
-      <button class="btn-grab" catchtap="grabOrder" data-id="{{item.id}}">立即抢单</button>
-    </view>
+    </block>
 
-    <view wx:if="{{grabList.length === 0 && assignList.length === 0}}" class="empty">
-      <text class="empty-emoji">🏃</text>
-      <text class="empty-text">暂无待接单快递</text>
-      <text class="empty-sub">耐心等待新订单出现～</text>
-    </view>
+    <block wx:if="{{assignList.length === 0 && grabList.length === 0}}">
+      <view class="empty">
+        <image class="empty-emoji" src="{{icons.runner_gray}}" mode="aspectFit" />
+        <text class="empty-text">暂无新订单</text>
+        <text class="empty-sub">稍后再来看看吧</text>
+      </view>
+    </block>
   </block>
 </view>

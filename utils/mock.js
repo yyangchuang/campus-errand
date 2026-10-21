@@ -2,11 +2,11 @@ const store = require('./store.js');
 
 function seed() {
   const users = [
-    { openid: 'user_001', nickname: '同学小张', role: 'user', avatar: '张', phone: '13812348888', school: '示例大学', stats: { publishCount: 5, acceptCount: 0, completeCount: 2 } },
-    { openid: 'user_002', nickname: '李同学', role: 'user', avatar: '李', phone: '13956781234', school: '示例大学', stats: { publishCount: 3, acceptCount: 0, completeCount: 3 } },
-    { openid: 'runner_001', nickname: '跑腿小哥A', role: 'runner', avatar: '🏃', phone: '13500000001', school: '示例大学', stats: { publishCount: 0, acceptCount: 23, completeCount: 23, rating: 4.9 } },
-    { openid: 'runner_002', nickname: '跑腿小哥B', role: 'runner', avatar: '🏃', phone: '13500000002', school: '示例大学', stats: { publishCount: 0, acceptCount: 15, completeCount: 15, rating: 4.8 } },
-    { openid: 'admin_001', nickname: '管理员', role: 'admin', avatar: '⚙️', phone: '13400000000', school: '示例大学', stats: { publishCount: 0, acceptCount: 0, completeCount: 0 } }
+    { openid: 'user_001', nickname: '同学小张', role: 'user', avatar: '', phone: '13812348888', school: '示例大学', stats: { publishCount: 5, acceptCount: 0, completeCount: 2 } },
+    { openid: 'user_002', nickname: '李同学', role: 'user', avatar: '', phone: '13956781234', school: '示例大学', stats: { publishCount: 3, acceptCount: 0, completeCount: 3 } },
+    { openid: 'runner_001', nickname: '跑腿小哥A', role: 'runner', avatar: '', phone: '13500000001', school: '示例大学', stats: { publishCount: 0, acceptCount: 23, completeCount: 23, rating: 4.9 } },
+    { openid: 'runner_002', nickname: '跑腿小哥B', role: 'runner', avatar: '', phone: '13500000002', school: '示例大学', stats: { publishCount: 0, acceptCount: 15, completeCount: 15, rating: 4.8 } },
+    { openid: 'admin_001', nickname: '管理员', role: 'admin', avatar: '', phone: '13400000000', school: '示例大学', stats: { publishCount: 0, acceptCount: 0, completeCount: 0 } }
   ];
   store.setUsers(users);
 

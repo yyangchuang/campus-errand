@@ -1,7 +1,9 @@
+const { ICONS } = require("../../utils/icons.js");
 const api = require('../../utils/api.js');
 
 Page({
-  data: { assignList: [], grabList: [], loggedIn: false },
+  data: {
+    icons: ICONS, assignList: [], grabList: [], loggedIn: false },
   onShow() {
     const app = getApp();
     const loggedIn = app.isLoggedIn();

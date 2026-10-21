@@ -1,74 +1,63 @@
 <view class="login-page">
   <view class="hero">
     <view class="brand">
-      <view class="logo">🏃</view>
-      <view class="app-name">校园跑腿</view>
-      <view class="app-sub">代取快递 · 低至 5 元 · 30 分钟达</view>
+      <image class="logo" src="{{icons.runner_white}}" mode="aspectFit" />
+      <text class="app-name">校园跑腿</text>
+      <text class="app-sub">代取快递 · 低至 5 元 · 30 分钟达</text>
     </view>
   </view>
 
   <view class="form-area">
     <view class="btn-wx-main" bindtap="onWechatLogin" loading="{{loggingIn}}" disabled="{{!agreed || loggingIn}}">
-      <text class="wx-ic">💬</text>
+      <image class="wx-ic" src="{{icons.wechat_orange}}" mode="aspectFit" />
       <text class="wx-t">微信一键登录</text>
     </view>
 
     <view wx:if="{{showPhoneExpand}}" class="phone-expand">
       <view class="field {{phoneFocus ? 'focus' : ''}} {{phoneError ? 'error' : ''}} {{phoneShake ? 'shake' : ''}}">
-        <view class="field-pfx">+86</view>
+        <text class="field-pfx">+86</text>
         <input class="field-in" type="number" maxlength="11" placeholder="请输入手机号" placeholder-class="ph" value="{{phone}}" bindinput="onPhoneInput" bindfocus="onPhoneFocus" bindblur="onPhoneBlur" />
-        <view wx:if="{{phone}}" class="field-clear" bindtap="clearPhone">✕</view>
+        <image wx:if="{{phone}}" class="field-clear" src="{{icons.x_gray}}" mode="aspectFit" bindtap="clearPhone" />
       </view>
-      <view class="field-bar"></view>
-      <view wx:if="{{phoneError}}" class="field-err">{{phoneError}}</view>
+      <view wx:if="{{phoneError}}" class="field-err"><text>{{phoneError}}</text></view>
 
       <view class="field {{codeFocus ? 'focus' : ''}}">
-        <input class="field-in" type="number" maxlength="6" placeholder="请输入验证码" placeholder-class="ph" value="{{code}}" bindinput="onCodeInput" bindfocus="onCodeFocus" bindblur="onCodeBlur" />
-        <view class="code-btn {{codeCountdown > 0 ? 'disabled' : ''}}" bindtap="sendCode">{{codeCountdown > 0 ? codeCountdown + 's' : '获取验证码'}}</view>
-      </view>
-      <view class="field-bar"></view>
-
-      <button class="btn-phone-login {{phoneValid && codeValid && agreed ? '' : 'disabled'}}" bindtap="onPhoneLogin" disabled="{{!phoneValid || !codeValid || !agreed || loggingIn}}" loading="{{loggingIn}}">
-        登 录
-      </button>
-    </view>
-
-    <view wx:else class="btn-phone-entry" bindtap="togglePhoneExpand">
-      <text>📱</text>
-      <text>手机号验证码登录</text>
-      <text class="arrow">›</text>
-    </view>
-
-    <view class="agree">
-      <view class="agree-hit" bindtap="toggleAgree">
-        <view class="agree-box {{agreed ? 'on' : ''}}">
-          <text wx:if="{{agreed}}">✓</text>
+        <input class="field-in" type="number" maxlength="6" placeholder="验证码" placeholder-class="ph" value="{{code}}" bindinput="onCodeInput" bindfocus="onCodeFocus" bindblur="onCodeBlur" />
+        <view class="code-btn {{codeCountdown > 0 ? 'disabled' : ''}}" bindtap="sendCode">
+          <text>{{codeCountdown > 0 ? codeCountdown + 's' : '获取验证码'}}</text>
         </view>
       </view>
-      <view class="agree-txt">
-        登录即同意
-        <text class="link" bindtap="openAgree">《用户协议》</text>
-        与
-        <text class="link" bindtap="openPrivacy">《隐私政策》</text>
+
+      <button class="btn-phone-login {{canLogin ? '' : 'disabled'}}" bindtap="onPhoneLogin">登录</button>
+    </view>
+
+    <view wx:else class="btn-phone-entry" bindtap="expandPhone">
+      <image class="pe-ic" src="{{icons.mobile_gray}}" mode="aspectFit" />
+      <text>手机号登录</text>
+      <image class="arrow" src="{{icons.chevron_gray}}" mode="aspectFit" />
+    </view>
+
+    <view class="agree" bindtap="toggleAgree">
+      <view class="agree-box {{agreed ? 'on' : ''}}">
+        <image wx:if="{{agreed}}" src="{{icons.check_white}}" mode="aspectFit" />
       </view>
+      <text class="agree-txt">登录即同意 <text class="link">《服务协议》</text> 与 <text class="link">《隐私政策》</text></text>
     </view>
 
     <view class="row-links">
-      <text class="link" bindtap="showPhonePanel">🔑 测试账号</text>
+      <text bindtap="showPhonePanel">测试账号</text>
     </view>
   </view>
+</view>
 
-  <view wx:if="{{showPhone}}" class="mask" bindtap="hidePhonePanel">
-    <view class="sheet" catchtap="">
-      <view class="sheet-hd">
-        <view class="sheet-t">测试账号</view>
-        <view class="sheet-x" bindtap="hidePhonePanel">✕</view>
-      </view>
-      <view class="sheet-bd">
-        <view class="dev-line"><text class="dev-k">学生</text><text class="dev-v">138xxxx / 139xxxx</text></view>
-        <view class="dev-line"><text class="dev-k">跑腿员</text><text class="dev-v">1350000xxx</text></view>
-        <view class="dev-line"><text class="dev-k">管理员</text><text class="dev-v">1340000xxx</text></view>
-      </view>
-    </view>
+<view class="mask" wx:if="{{showPhonePanel}}" bindtap="hidePhonePanel"></view>
+<view class="sheet" wx:if="{{showPhonePanel}}">
+  <view class="sheet-hd">
+    <text class="sheet-t">测试账号</text>
+    <image class="sheet-x" src="{{icons.x_gray}}" mode="aspectFit" bindtap="hidePhonePanel" />
+  </view>
+  <view wx:for="{{PHONE_ROLES}}" wx:key="prefix" wx:for-item="role" class="dev-line" data-phone="{{role.prefix}}0000" bindtap="quickLogin">
+    <text class="dev-k">{{role.label}}</text>
+    <text class="dev-v">{{role.prefix}}0000</text>
   </view>
 </view>

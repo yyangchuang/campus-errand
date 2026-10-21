@@ -1,12 +1,23 @@
+const { ICONS } = require("../../utils/icons.js");
 const api = require('../../utils/api.js');
 
 Page({
   data: {
+    icons: ICONS,
     user: null,
     pricing: {},
-    isRunner: false,
+    stats: {
+      publishCount: 0,
+      acceptCount: 0,
+      completeCount: 0,
+      totalEarn: 0
+    },
     incomePeriod: 'week',
-    incomeData: null,
+    incomeAmount: 0,
+    incomeCount: 0,
+    incomeWeek: null,
+    incomeMonth: null,
+    incomeTotal: null,
     loggedIn: false
   },
 
@@ -21,29 +32,22 @@ Page({
       return;
     }
     const raw = wx.getStorageSync('userInfo') || {};
-    const stats = raw.stats || {
-      publishCount: 0,
-      acceptCount: 0,
-      completeCount: 0,
-      rating: null
-    };
+    const rawStats = raw.stats || { publishCount: 0, acceptCount: 0, completeCount: 0, totalEarn: 0 };
     const user = {
       ...raw,
       nickname: raw.nickname || '微信用户',
-      avatar: raw.avatar || '👤',
+      avatar: '',
       phone: raw.phone || '未绑定手机',
-      school: raw.school || '未设置学校',
-      stats
+      school: raw.school || '未设置学校'
     };
-    const isRunner = user.role === 'runner';
 
     this.setData({
       user,
-      pricing: app.globalData.pricing,
-      isRunner
+      pricing: app.globalData.pricing || {},
+      stats: rawStats
     });
 
-    if (isRunner) {
+    if (user.role === 'runner') {
       this.loadIncome();
     }
 
@@ -68,29 +72,35 @@ Page({
     }
   },
 
-  switchPeriod(p) {
-    this.setData({ incomePeriod: p });
-    const map = { week: this.data.incomeWeek, month: this.data.incomeMonth, total: this.data.incomeTotal };
-    this.setData({ incomeData: map[p] });
+  changePeriod(e) {
+    const period = e.currentTarget.dataset.period;
+    this.switchPeriod(period);
   },
 
-  switchToRunner() {
-    getApp().switchRole('runner');
-    wx.showToast({ title: '已切换为跑腿员视角', icon: 'none' });
-    wx.switchTab({ url: '/pages/pending/pending' });
+  switchPeriod(p) {
+    const map = { week: this.data.incomeWeek, month: this.data.incomeMonth, total: this.data.incomeTotal };
+    const data = map[p] || { amount: 0, count: 0 };
+    this.setData({
+      incomePeriod: p,
+      incomeAmount: data.amount || 0,
+      incomeCount: data.count || 0
+    });
   },
-  switchToUser() {
-    getApp().switchRole('user');
-    wx.showToast({ title: '已切换为发单用户视角', icon: 'none' });
-    wx.switchTab({ url: '/pages/publish/publish' });
+
+  switchRole(e) {
+    const role = e.currentTarget.dataset.role;
+    const app = getApp();
+    app.switchRole(role);
+    wx.showToast({ title: role === 'runner' ? '已切换为跑腿员' : '已切换为发单用户', icon: 'none' });
+    wx.switchTab({ url: role === 'runner' ? '/pages/pending/pending' : '/pages/publish/publish' });
   },
+
   logout() {
     wx.showModal({
       title: '确定退出登录吗？',
       success: (r) => {
         if (r.confirm) {
-          const app = getApp();
-          app.logout();
+          getApp().logout();
           if (typeof this.getTabBar === 'function' && this.getTabBar()) {
             this.getTabBar().refresh();
           }
@@ -103,6 +113,10 @@ Page({
 
   editProfile() {
     wx.showToast({ title: '编辑资料开发中', icon: 'none' });
+  },
+
+  goLegal() {
+    wx.showToast({ title: '服务协议开发中', icon: 'none' });
   },
 
   goLogin() {

@@ -1,3 +1,4 @@
+const { ICONS } = require("../../utils/icons.js");
 const api = require('../../utils/api.js');
 
 const STATUS_FLOW = ['pending', 'accepted', 'delivering', 'delivered', 'completed'];
@@ -31,6 +32,7 @@ function formatHMS(ms) {
 
 Page({
   data: {
+    icons: ICONS,
     order: null,
     user: null,
     role: 'user',

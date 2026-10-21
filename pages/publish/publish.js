@@ -1,16 +1,18 @@
 const store = require('../../utils/store.js');
 const api = require('../../utils/api.js');
+const { ICONS } = require('../../utils/icons.js');
 
 Page({
   data: {
+    icons: ICONS,
     stations: [],
     expressList: [],
     pricing: {},
     ptypeOptions: [
-      { key: 'small', label: '小包裹', desc: '衣服/手机壳', icon: '🏷️' },
-      { key: 'mid', label: '中包裹', desc: '鞋盒/书/日用品', icon: '📦' },
-      { key: 'big', label: '大包裹', desc: '行李箱/大箱', icon: '📦' },
-      { key: 'urgent', label: '急件/特殊', desc: '易碎/生鲜/文件', icon: '⚡' }
+      { key: 'small', label: '小包裹', desc: '衣服/手机壳', iconKey: 'package_gray' },
+      { key: 'mid', label: '中包裹', desc: '鞋盒/书/日用品', iconKey: 'package_orange' },
+      { key: 'big', label: '大包裹', desc: '行李箱/大箱', iconKey: 'package_red' },
+      { key: 'urgent', label: '急件/特殊', desc: '易碎/生鲜/文件', iconKey: 'flame_orange' }
     ],
     stationIdx: 0,
     address: '',

@@ -1,14 +1,6 @@
 <view class="tabbar">
-  <block wx:if="{{role === 'runner'}}">
-    <view class="tab-item {{selected === index ? 'active' : ''}}" wx:for="{{runnerTabs}}" wx:key="pagePath" data-path="{{item.pagePath}}" data-idx="{{index}}" bindtap="switchTab">
-      <text class="icon">{{item.icon}}</text>
-      <text class="text">{{item.text}}</text>
-    </view>
-  </block>
-  <block wx:else>
-    <view class="tab-item {{selected === index ? 'active' : ''}}" wx:for="{{userTabs}}" wx:key="pagePath" data-path="{{item.pagePath}}" data-idx="{{index}}" bindtap="switchTab">
-      <text class="icon">{{item.icon}}</text>
-      <text class="text">{{item.text}}</text>
-    </view>
-  </block>
+  <view class="tab-item {{item.selected ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="pagePath" data-path="{{item.pagePath}}" data-idx="{{index}}" bindtap="switchTab">
+    <image class="icon" src="{{item.icon}}" mode="aspectFit" />
+    <text class="text">{{item.text}}</text>
+  </view>
 </view>

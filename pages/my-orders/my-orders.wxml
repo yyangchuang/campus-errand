@@ -1,7 +1,7 @@
 <view class="page">
   <block wx:if="{{!loggedIn}}">
     <view class="empty">
-      <text class="empty-emoji">🔐</text>
+      <image class="empty-emoji" src="{{icons.shield_gray}}" mode="aspectFit" />
       <text class="empty-text">请先登录</text>
       <text class="empty-sub">登录后查看我的订单</text>
       <button class="btn-login-empty" bindtap="goLogin">立即登录</button>
@@ -17,37 +17,49 @@
     <scroll-view class="tabs" scroll-x enable-flex scroll-with-animation>
       <view wx:for="{{filterTabs}}" wx:key="key"
             class="tab {{filterStatus === item.key ? 'active' : ''}}"
-            data-key="{{item.key}}" bindtap="filterChange">{{item.label}}</view>
+            data-key="{{item.key}}" bindtap="filterChange">
+        <text>{{item.label}}</text>
+      </view>
     </scroll-view>
 
-    <view wx:if="{{filteredList.length === 0}}" class="empty">
-      <text class="empty-emoji">📦</text>
-      <text class="empty-text">{{filterStatus === 'all' ? '还没有订单' : '该状态暂无订单'}}</text>
-      <text class="empty-sub">{{filterStatus === 'all' ? '去发布一单试试吧～' : '切换其他状态看看'}}</text>
-    </view>
+    <block wx:if="{{filteredList.length === 0}}">
+      <view class="empty">
+        <image class="empty-emoji" src="{{icons.package_gray}}" mode="aspectFit" />
+        <text class="empty-text">{{filterStatus === 'all' ? '还没有订单' : '当前状态下没有订单'}}</text>
+        <text class="empty-sub">{{filterStatus === 'all' ? '去发布第一个订单吧' : '试试其他筛选条件'}}</text>
+      </view>
+    </block>
 
-    <view wx:for="{{filteredList}}" wx:key="id" class="order-card" bindtap="goDetail" data-id="{{item.id}}">
-      <view class="oc-head">
-        <view>
-          <text class="tag {{item.statusCls}}">{{item.statusLabel}}</text>
-          <text wx:if="{{item.takeMode === 'assign'}}" class="tag tag-pink">派单</text>
+    <block wx:else>
+      <view wx:for="{{filteredList}}" wx:key="id" class="order-card" bindtap="goDetail" data-id="{{item.id}}">
+        <view class="oc-head">
+          <view class="oc-tags">
+            <text class="tag {{item.statusTag.cls}}">{{item.statusTag.label}}</text>
+            <text wx:if="{{item.takeMode === 'assign'}}" class="tag tag-orange">派单</text>
+          </view>
+          <text class="oc-time">{{item.timeLabel}}</text>
         </view>
-        <text class="oc-reward">¥{{item.total}}</text>
-      </view>
-      <view class="oc-route">
-        <view class="route-r1"><text class="dotg">●</text>{{item.stationName}}</view>
-        <view class="route-r2"><text class="doto">●</text>{{item.address}}</view>
-      </view>
-      <view class="oc-meta">
-        <view class="pkg-tags">
-          <text wx:for="{{item.pkgTags}}" wx:for-item="tag" wx:key="index" class="ptype-tag {{tag.cls}}">{{tag.text}}×1</text>
+        <view class="oc-route">
+          <view class="route-r1">
+            <text class="doto">●</text>
+            <text>{{item.stationName}}</text>
+          </view>
+          <view class="route-r2">
+            <text class="dotg">●</text>
+            <text>{{item.address}}</text>
+          </view>
         </view>
-        共{{item.pkgCount}}件
+        <view class="oc-meta">
+          <text class="pkg-tags">
+            <text wx:if="{{item.packages.length > 0}}" class="tag tag-gray">{{item.packages.length}}件</text>
+          </text>
+          <text wx:if="{{item.urgent}}" class="tag tag-orange">急件</text>
+        </view>
+        <view class="oc-foot">
+          <text class="oc-reward">¥{{item.total}}</text>
+          <text class="oc-detail">查看详情</text>
+        </view>
       </view>
-      <view class="oc-foot">
-        <text class="oc-time">{{item.timeLabel}} · {{item.id}}</text>
-        <text class="oc-time">查看详情 ›</text>
-      </view>
-    </view>
+    </block>
   </block>
 </view>

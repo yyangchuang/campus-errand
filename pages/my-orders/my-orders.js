@@ -1,3 +1,4 @@
+const { ICONS } = require("../../utils/icons.js");
 const api = require('../../utils/api.js');
 
 const STATUS_MAP = {
@@ -11,6 +12,7 @@ const STATUS_MAP = {
 
 Page({
   data: {
+    icons: ICONS,
     role: 'user',
     roleLabel: '我发的',
     orderList: [],

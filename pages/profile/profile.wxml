@@ -1,7 +1,7 @@
 <view class="page">
   <block wx:if="{{!loggedIn}}">
     <view class="empty">
-      <text class="empty-emoji">🔐</text>
+      <image class="empty-emoji" src="{{icons.shield_gray}}" mode="aspectFit" />
       <text class="empty-text">请先登录</text>
       <text class="empty-sub">登录后查看个人信息</text>
       <button class="btn-login-empty" bindtap="goLogin">立即登录</button>
@@ -9,85 +9,99 @@
   </block>
 
   <block wx:else>
-  <view class="profile-head">
-    <view class="avatar-big">{{user.avatar}}</view>
-    <view class="ph-info">
-      <view class="p-name">
-        {{user.nickname}}
-        <text wx:if="{{user.role === 'runner'}}" class="tag tag-pink">跑腿员</text>
-        <text wx:elif="{{user.role === 'admin'}}" class="tag tag-blue">管理员</text>
-        <text wx:else class="tag tag-green">发单用户</text>
-      </view>
-      <view class="p-sub">{{user.phone}} · {{user.school}}</view>
-    </view>
-    <view class="ph-edit" bindtap="editProfile">⚙️</view>
-  </view>
-
-  <view class="stats-card">
-    <view class="p-stat">
-      <view class="p-stat-num">{{user.role === 'runner' ? user.stats.acceptCount : user.stats.publishCount}}</view>
-      <view class="p-stat-lbl">{{user.role === 'runner' ? '累计接单' : '累计发单'}}</view>
-    </view>
-    <view class="p-stat-sep"></view>
-    <view class="p-stat">
-      <view class="p-stat-num">{{user.role === 'runner' ? (user.stats.rating || '-') : '-'}}</view>
-      <view class="p-stat-lbl">{{user.role === 'runner' ? '综合评分' : '评价星级'}}</view>
-    </view>
-    <view class="p-stat-sep"></view>
-    <view class="p-stat">
-      <view class="p-stat-num">{{user.stats.completeCount}}</view>
-      <view class="p-stat-lbl">已完成</view>
-    </view>
-  </view>
-
-  <!-- 跑腿员收入统计 -->
-  <view wx:if="{{isRunner && incomeData}}" class="income-card">
-    <view class="income-head">
-      <view class="income-title">💰 收入统计</view>
-      <view class="income-tabs">
-        <view class="itab {{incomePeriod === 'week' ? 'itab-active' : ''}}" bindtap="switchPeriod" data-p="week">本周</view>
-        <view class="itab {{incomePeriod === 'month' ? 'itab-active' : ''}}" bindtap="switchPeriod" data-p="month">本月</view>
-        <view class="itab {{incomePeriod === 'total' ? 'itab-active' : ''}}" bindtap="switchPeriod" data-p="total">累计</view>
+    <view class="profile-head">
+      <image class="avatar-big" src="{{user.avatar || icons.user_white}}" mode="aspectFit" />
+      <view class="ph-info">
+        <view class="p-name">
+          <text>{{user.nickname}}</text>
+          <text wx:if="{{user.role === 'runner'}}" class="tag tag-orange">跑腿员</text>
+          <text wx:elif="{{user.role === 'admin'}}" class="tag tag-blue">管理员</text>
+          <text wx:else class="tag tag-green">发单用户</text>
+        </view>
+        <text class="p-sub">校园跑腿 · {{user.role === 'runner' ? '正在接单' : '随时发布订单'}}</text>
       </view>
     </view>
-    <view class="income-main">
-      <view class="income-amount">¥{{incomeData.total}}</view>
-      <view class="income-count">完成 {{incomeData.count}} 单</view>
-    </view>
-  </view>
 
-  <view class="card" wx:if="{{!isRunner}}">
-    <view class="card-title">💰 跑腿费标准（平台统一定价）</view>
-    <view class="price-row">
-      <view><text class="ptype-tag ptype-small">小</text> 衣服/零食/手机壳</view>
-      <text class="price">¥{{pricing.small}}/件</text>
+    <view class="stats-card">
+      <view class="p-stat">
+        <text class="p-stat-num">{{stats.publishCount}}</text>
+        <text class="p-stat-lbl">发单数</text>
+      </view>
+      <view class="p-stat-sep"></view>
+      <view class="p-stat">
+        <text class="p-stat-num">{{stats.completeCount}}</text>
+        <text class="p-stat-lbl">已完成</text>
+      </view>
+      <view class="p-stat-sep"></view>
+      <view class="p-stat">
+        <text class="p-stat-num">¥{{stats.totalEarn || 0}}</text>
+        <text class="p-stat-lbl">总收入</text>
+      </view>
     </view>
-    <view class="price-row">
-      <view><text class="ptype-tag ptype-mid">中</text> 鞋盒/书/日用品</view>
-      <text class="price">¥{{pricing.mid}}/件</text>
-    </view>
-    <view class="price-row">
-      <view><text class="ptype-tag ptype-big">大</text> 行李箱/大箱子</view>
-      <text class="price">¥{{pricing.big}}/件</text>
-    </view>
-    <view class="price-row">
-      <view><text class="ptype-tag ptype-urgent">急</text> 易碎/生鲜/文件</view>
-      <text class="price">¥{{pricing.urgent}}+/件</text>
-    </view>
-  </view>
 
-  <view class="card">
-    <view class="menu-item" bindtap="switchToRunner" wx:if="{{user.role !== 'runner'}}">
-      <text class="mi">🔧</text><text class="mt">开发：切换为跑腿员视角</text><text class="arr">›</text>
+    <view wx:if="{{user.role === 'runner'}}" class="income-card">
+      <view class="income-head">
+        <view class="income-title">
+          <image class="income-ic" src="{{icons.coins_orange}}" mode="aspectFit" />
+          <text>收入统计</text>
+        </view>
+        <view class="income-tabs">
+          <view class="itab {{incomePeriod === 'week' ? 'itab-active' : ''}}" data-period="week" bindtap="changePeriod">本周</view>
+          <view class="itab {{incomePeriod === 'month' ? 'itab-active' : ''}}" data-period="month" bindtap="changePeriod">本月</view>
+        </view>
+      </view>
+      <view class="income-main">
+        <text class="income-amount">¥{{incomeAmount || 0}}</text>
+        <text class="income-count">完成 {{incomeCount || 0}} 单</text>
+      </view>
     </view>
-    <view class="menu-item" bindtap="switchToUser" wx:if="{{user.role !== 'user'}}">
-      <text class="mi">🔧</text><text class="mt">开发：切换为发单用户视角</text><text class="arr">›</text>
-    </view>
-    <view class="menu-item" bindtap="logout">
-      <text class="mi">🚪</text><text class="mt" style="color:#e53935">退出登录</text><text class="arr">›</text>
-    </view>
-  </view>
 
-  <view class="ver">v0.6 · 校园跑腿</view>
+    <view class="card">
+      <view class="card-title">
+        <image class="ci" src="{{icons.coins_orange}}" mode="aspectFit" />
+        <text>跑腿费标准（平台统一定价）</text>
+      </view>
+      <view class="price-row">
+        <text>小包裹（衣服/手机壳）</text>
+        <text class="price">¥{{pricing.small}}</text>
+      </view>
+      <view class="price-row">
+        <text>中包裹（鞋盒/书）</text>
+        <text class="price">¥{{pricing.mid}}</text>
+      </view>
+      <view class="price-row">
+        <text>大包裹（行李箱/大箱）</text>
+        <text class="price">¥{{pricing.big}}</text>
+      </view>
+      <view class="price-row">
+        <text>急件/特殊（易碎/生鲜）</text>
+        <text class="price">¥{{pricing.urgent}}+</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="menu-item" wx:if="{{user.role !== 'runner'}}" bindtap="switchRole" data-role="runner">
+        <image class="mi" src="{{icons.wrench_gray}}" mode="aspectFit" />
+        <text class="mt">开发：切换为跑腿员视角</text>
+        <image class="arr" src="{{icons.chevron_gray}}" mode="aspectFit" />
+      </view>
+      <view class="menu-item" wx:if="{{user.role === 'runner'}}" bindtap="switchRole" data-role="user">
+        <image class="mi" src="{{icons.wrench_gray}}" mode="aspectFit" />
+        <text class="mt">开发：切换为发单用户视角</text>
+        <image class="arr" src="{{icons.chevron_gray}}" mode="aspectFit" />
+      </view>
+      <view class="menu-item" bindtap="goLegal">
+        <image class="mi" src="{{icons.shield_gray}}" mode="aspectFit" />
+        <text class="mt">服务协议与法律声明</text>
+        <image class="arr" src="{{icons.chevron_gray}}" mode="aspectFit" />
+      </view>
+      <view class="menu-item" bindtap="logout">
+        <image class="mi" src="{{icons.log_out_red}}" mode="aspectFit" />
+        <text class="mt mt-danger">退出登录</text>
+        <image class="arr" src="{{icons.chevron_gray}}" mode="aspectFit" />
+      </view>
+    </view>
+
+    <view class="ver"><text>v1.0.0 · 校园跑腿</text></view>
   </block>
 </view>
