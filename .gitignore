@@ -1,13 +1,19 @@
-node_modules/
+# macOS
 .DS_Store
-project.private.config.json
-*.log
-.miniprogram/
-.temp/
-.cache/
+
+# Trae IDE
+.agents/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Env
 .env
-*.new
-fix_*.py
-preview.html
-ui-v*.html
-settings.xml
+
+# 后端构建产物
+server/target/
+
+# 前端本地配置
+client/project.private.config.json
