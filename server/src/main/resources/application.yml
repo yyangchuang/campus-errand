@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: errand-server
+  datasource:
+    url: jdbc:mysql://localhost:3306/errand_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: errand
+    password: errand123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+# ============================================================
+# 🔑 微信小程序配置 —— 把下面两行改成你的真实值！
+# ============================================================
+wechat:
+  appid: wx_your_appid_here            # ← 第 1 个：填你的 AppID
+  secret: your_app_secret_here         # ← 第 2 个：填你的 AppSecret
+
+jwt:
+  secret: errand_jwt_secret_key_must_be_at_least_32_chars_long
+  expire-hours: 72
+
+logging:
+  level:
+    com.errand: debug
